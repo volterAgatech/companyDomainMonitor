@@ -1,6 +1,7 @@
 <?php
 class Crud
 {
+    //пример select
     function getPlaybill($limit, $month, $category)
     {
         //текущий год
