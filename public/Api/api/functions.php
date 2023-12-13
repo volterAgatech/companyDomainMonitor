@@ -39,12 +39,9 @@ class Functions
 
         if (empty($err_no)) {
             $info = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+
             echo '<pre>';
-
-
-            $resSSlArray['ssltill'] = date('Y-m-d', $info['validTo_time_t']);
-            var_dump($resSSlArray);
-
+            var_dump($resSSlArray['ssltill'] = date('Y-m-d', $info['validTo_time_t']));
             echo '</pre>';
         }
 
@@ -56,7 +53,7 @@ class Functions
         //2. Получаем информацию о домене(Даты регистраций< SSl)
         //$this->getWhoisDomainData($domainNames[1]);
         //$this->getSSLDomainData($domainNames[1]);
-        $this->getSSLDomainData('vdpo73.ru');
+        $this->getSSLDomainData($domainNames[1]);
     }
 }
 ?>
