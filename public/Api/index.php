@@ -3,8 +3,7 @@ include "./api/header.php";
 include "./api/functions.php";
 require "./rb/rb.php";
 require "./phpWhois/src/whois.main.php";
-R::setup('mysql:host=localhost;dbname=domainmonitor', 'root', 'root'); //for both mysql or mariaDB//rb_pharmacy
-//localhost", "dev_alley_user", "QCiU0JtVo4z557ZVQk=", "tryfel_db
+R::setup('mysql:host=localhost;dbname=domainmonitor', 'root', 'root'); 
 R::freeze(true);
 R::useJSONFeatures(TRUE);
 
