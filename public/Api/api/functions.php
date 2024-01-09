@@ -53,15 +53,20 @@ class Functions
                 $sslTill = date('Y-m-d', $info['validTo_time_t']);
                 //формируем массив обьектов
                 //обьект
-                $obj['ssltill'] = $sslTill;
+                $domainData = (object)[
+                    
+                    'ssltill' =>$sslTill,
+                ];
+
+                //$obj['ssltill'] = $sslTill;
                 //$obj = new ArrayObject($obj);
-                $dnameSSLData[$dname] = $obj;
+                $dnameSSLData[$dname] = $domainData;
             }
         }
         echo "<pre style='background:black;color:white;'>";
         var_dump($dnameSSLData);
         echo "</pre>";
-        var_dump( $dnameSSLData['salyt73.ru']['ssltill']);
+        var_dump( $dnameSSLData['salyt73.ru']->ssltill);
     }
     //2 способ 
     // function getSSLDomainData($dnameArray)
