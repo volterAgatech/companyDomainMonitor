@@ -7,6 +7,39 @@ class WhoisData
     //1. Читаем все домены
     //2. Узнаем всю информацию о каждом домене 
     //3. Записываем в таблицу актуальную информацию 
+    // function test2($dname)
+    // {
+    //     $g = stream_context_create(array("ssl" => array("capture_peer_cert" => true)));
+    //     // $r = fopen("https://vdpo73.ru", "rb", true, $g) or  die (error_get_last());
+    //     if (!fopen("https://$dname/", "rb", false, $g)) {
+    //         echo "Сертификат отсутствует";
+    //         exit;
+    //     }
+
+    //     $r = fopen("https://$dname/", "rb", false, $g);
+    //     $cert = stream_context_get_params($r);
+    //     $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+    //     echo "Certificate info: <pre>" . print_r($certinfo, true) . "</pre>";
+
+    //     $data['start'] = date("d.m.Y", $certinfo['validFrom_time_t']);
+    //     $data['end'] = date("d.m.Y", $certinfo['validTo_time_t']);
+
+    //     print_r($data);
+
+
+    // }
+    function test($dname)
+    {
+        $dnameData = [];
+        $whois = new Whois();
+
+        $query = $dname;
+        $result = $whois->Lookup($query, false);
+        echo "<pre>";
+        var_dump($result);
+        echo "</pre>";
+
+    }
     function getWhoisDomainData($result)
     {
         $resultData = [];
@@ -78,7 +111,7 @@ class WhoisData
         //var_dump($dnameData['salyt73.ru']['ssltill']);
     }
     //функция обновленич информации и записи в бд
-    function toDBDomainInfo($whoisSSLData)
+    function sendAllDomainDataToDB($whoisSSLData)
     {
         R::wipe('dstat');
         foreach ($whoisSSLData as $key => $value) {
@@ -99,8 +132,15 @@ class WhoisData
         //2. Получаем информацию о домене(Даты регистраций самого домена)
         //3. Получаем всю информацию о SSL домена
 
-        $this->toDBDomainInfo($this->getSSLWhoisDomainData($domainNames));
+        $this->sendAllDomainDataToDB($this->getSSLWhoisDomainData($domainNames));
         //$this->getSSLWhoisDomainData($domainNames);
+    }
+    function getAllDomainData($limit)
+    {
+        $domainsInfo = R::getAll("SELECT * FROM  dstat ORDER BY id DESC limit " . $limit);
+        //$domainsInfo = R::findAll("dstat");
+        return $domainsInfo;
+        //var_dump($domainsInfo);
     }
 }
 ?>

@@ -37,6 +37,7 @@ export default {}
   background-color: #002f7d;
   display: flex;
   align-items: center;
+  z-index: 1;
 }
 .main_header_container {
   display: grid;

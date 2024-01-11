@@ -18,113 +18,32 @@
               <th scope="col">Domain</th>
               <th scope="col">Created</th>
               <th scope="col">Paid-Till</th>
-              <th scope="col">SSL Created</th>
               <th scope="col">SSL-Till</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
-            </tr>
-            <tr class="table__row">
-              <th scope="row">1</th>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string</td>
-              <td>string<button type="button" class="btn btn-danger">X</button></td>
+            <tr class="table__row" v-for="(domain, index) in domainsInfo" :key="index">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>
+                <a :href="`http://${domain.dname}`" target="_blank" rel="noopener noreferrer">{{
+                  domain.dname
+                }}</a>
+              </td>
+              <td>{{ dateFormat(domain.datecreated) }}</td>
+              <td>{{ dateFormat(domain.paidtill) }}</td>
+              <td class="ssltd" :class="{ alert: domain.ssltill == '0000-00-00' }">
+                <div v-if="domain.ssltill != '0000-00-00'">{{dateFormat( domain.ssltill) }}</div>
+                <div v-else class="ssltd__nosert">НЕТ СЕРТИФИКАТА</div>
+                <button type="button" class="btn btn-danger">X</button>
+              </td>
             </tr>
           </tbody>
         </table>
         <div class="pagination__container">
           <div class="arrows__container">
-            <button class="btn arrow__prev btn-danger">PREV</button>
-           <button class="btn arrow__next btn-danger">NEXT</button>
+            <button class="btn arrow__next btn-danger" @click.prevent="setLimit(10)">
+              Показать еще
+            </button>
           </div>
         </div>
       </div>
@@ -132,7 +51,42 @@
   </section>
 </template>
 <script>
-export default {}
+import axios from 'axios'
+export default {
+  data() {
+    return {
+      domainsInfo: {},
+      limitOnPage: 10
+    }
+  },
+  methods: {
+    dateFormat(date) {
+      let dateArray = date.split('-')
+      return dateArray[2] + '.' + dateArray[1] + '.' + dateArray[0]
+    },
+    setData(res) {
+      //сохранить список полученных задач
+      this.domainsInfo = res
+      console.log(this.domainsInfo)
+    },
+    loadDomainsInfo() {
+      axios
+        .post('http://domainmonitor/public/Api/', {
+          action: 'getAllDomainData',
+          limit: this.limitOnPage
+        })
+        .then((response) => this.setData(response.data))
+    },
+    setLimit(num) {
+      this.limitOnPage += num
+      console.log(this.limitOnPage)
+      this.loadDomainsInfo()
+    }
+  },
+  mounted() {
+    this.loadDomainsInfo()
+  }
+}
 </script>
 <style lang="scss">
 .main__section {
@@ -140,13 +94,15 @@ export default {}
   // height: 100dvh;
   background-color: #fff4f4;
 }
-
+.ssltd.alert {
+  background-color: #dc3545 !important;
+}
 .number {
   width: 45px;
 }
 .arrows__container {
-    display: flex;
-    justify-content: end;
+  display: flex;
+  justify-content: end;
 }
 .monitor__btns {
   display: flex;

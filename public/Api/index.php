@@ -13,6 +13,9 @@ $whois = new WhoisData;
 if (!R::testConnection()) {
   echo 'нет подключения';
 } else {
-  $whois->getAllDomainInfo();
-  //code
+  if ($recivedData->action == 'getAllDomainData') {
+
+    echo json_encode($whois->getAllDomainData($recivedData->limit));
+  }
+  $whois->test2('xn--73-6kchf2awx.xn--p1ai');
 }
